@@ -1,12 +1,14 @@
 .chatbox {
     margin: 5rem auto;
-    height: 60vh;
+    height: 70vh;
     max-width:900px;
     width:70%;
     border: 1px solid #ccc;
     padding: 12px;
     display: flex;
     flex-direction: column;
+    background-color: #fff;
+    border-radius: 5px;
 }
 
 .chatbox-content {
@@ -35,6 +37,11 @@
     cursor: pointer;
     padding: 12px;
     font-size: 14px;
+    transition: all ease 0.3s;
+}
+
+.chatbox-action button:hover {
+    color: #df6c21;
 }
 
 .input-text {

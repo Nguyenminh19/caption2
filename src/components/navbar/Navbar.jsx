@@ -1,37 +1,46 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { div } from "react-router-dom";
 import "./navbar.css";
+
+// import logoDTU from "../../assets/img/logo.gif";
 
 const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="container" height="100%">
         <div className="container-fluid d-flex justify-content-between">
-          <Link to="/" className="nav-item nav-link nav-link--header">
-            Homepage
-          </Link>
+          <div className="nav-item nav-link nav-link--header">DTU</div>
 
           <div className="container-fluid navbar-nav d-flex flex-row justify-content-end">
-            <Link
-              to="/service"
+            <div
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.replace("/#section-about");
+              }}
               className="nav-item nav-link nav-link--header px-4"
             >
-              SERVICE
-            </Link>
+              Homepage
+            </div>
 
-            <Link
-              to="/store"
+            <div
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.replace("/#section-chatbox");
+              }}
               className="nav-item nav-link nav-link--header  px-4"
             >
-              STORE
-            </Link>
+              Chat
+            </div>
 
-            <Link
-              to="/about"
+            <div
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.replace("/#section-members");
+              }}
               className="nav-item nav-link nav-link--header  px-4"
             >
-              ABOUT US
-            </Link>
+              Team
+            </div>
           </div>
         </div>
       </div>
