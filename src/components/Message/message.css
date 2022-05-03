@@ -1,0 +1,53 @@
+.message {
+    position: relative;
+    padding: 10px;
+    width: fit-content;
+    max-width:60%;
+    min-height: 50px;
+    font:   'Open Sans', sans-serif;
+    border-radius: 10px;
+    font-size: 1rem;
+}
+
+.message--bot {
+    margin-left: 20px;
+    margin-bottom: 10px;
+    background-color: #A8DDFD;
+    text-align: left;
+    font:   'Open Sans', sans-serif;
+    border: 1px solid #97C6E3;
+    border-radius: 10px;
+}
+
+.message--bot:before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-top: 15px solid #A8DDFD;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    top: 0;
+    left: -15px;
+}
+
+.message--user {
+    margin: 0 20px 10px auto;
+    background-color: #f8e896;
+    text-align: left;
+    font:   'Open Sans', sans-serif;
+    border: 1px solid #dfd087;
+    border-radius: 10px;
+}
+
+.message--user:before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-bottom: 17px solid #f8e896;
+    border-left: 16px solid transparent;
+    border-right: 16px solid transparent;
+    bottom: -1px;
+    right: -17px;
+}
