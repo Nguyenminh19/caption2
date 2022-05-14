@@ -1,6 +1,5 @@
-import React from "react";
-import { div } from "react-router-dom";
-import "./navbar.css";
+import React from 'react'
+import './navbar.css'
 
 // import logoDTU from "../../assets/img/logo.gif";
 
@@ -14,8 +13,8 @@ const Navbar = () => {
           <div className="container-fluid navbar-nav d-flex flex-row justify-content-end">
             <div
               onClick={(e) => {
-                e.preventDefault();
-                window.location.replace("/#section-about");
+                e.preventDefault()
+                window.location.replace('/#section-about')
               }}
               className="nav-item nav-link nav-link--header px-4"
             >
@@ -24,8 +23,8 @@ const Navbar = () => {
 
             <div
               onClick={(e) => {
-                e.preventDefault();
-                window.location.replace("/#section-chatbox");
+                e.preventDefault()
+                window.location.replace('/#section-chatbox')
               }}
               className="nav-item nav-link nav-link--header  px-4"
             >
@@ -34,8 +33,8 @@ const Navbar = () => {
 
             <div
               onClick={(e) => {
-                e.preventDefault();
-                window.location.replace("/#section-members");
+                e.preventDefault()
+                window.location.replace('/#section-members')
               }}
               className="nav-item nav-link nav-link--header  px-4"
             >
@@ -45,7 +44,7 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar

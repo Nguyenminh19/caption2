@@ -1,80 +1,101 @@
-import React, { useEffect, useRef, useState } from "react";
-import useGetAnswer from "../../hooks/use-getAnswer";
-import Message from "../Message/Message";
-import About from "./About";
-import "./homepage.css";
-import Service from "./Service";
+import React, { useEffect, useRef, useState } from 'react'
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
+import useGetAnswer from '../../hooks/use-getAnswer'
+import Message from '../Message/Message'
+import About from './About'
+import './homepage.css'
+import Service from './Service'
 
 const Homepage = () => {
+  const { transcript, listening, browserSupportsSpeechRecognition, resetTranscript } = useSpeechRecognition()
   const [conversation, setConversation] = useState(() => {
-    const saved = sessionStorage.getItem("conversation");
-    const initialValue = JSON.parse(saved);
-    return initialValue || [];
-  });
+    const saved = sessionStorage.getItem('conversation')
+    const initialValue = JSON.parse(saved)
+    return initialValue || []
+  })
 
-  const [userInput, setUserInput] = useState("");
+  const [userInput, setUserInput] = useState('')
+  const [userSpoken, setUserSpoken] = useState('')
 
   const addMessageToConversation = (message) => {
     setConversation((prevState) => [
       ...prevState,
       {
-        sender: "bot",
+        sender: 'bot',
         content: message,
       },
-    ]);
-  };
+    ])
+  }
 
-  const { isLoading, error, sendRequest } = useGetAnswer(
-    addMessageToConversation
-  );
+  const { isLoading, error, sendRequest } = useGetAnswer(addMessageToConversation)
 
   useEffect(() => {
     if (conversation.length === 0) {
-      sendRequest("hello");
+      sendRequest('hello')
     }
-  }, [conversation]);
+  }, [])
 
   useEffect(() => {
     if (chatboxRef.current) {
-      chatboxRef.current.scrollTop = chatboxRef.current.scrollHeight;
+      chatboxRef.current.scrollTop = chatboxRef.current.scrollHeight
     }
-    sessionStorage.setItem("conversation", JSON.stringify(conversation));
-  }, [conversation]);
+    sessionStorage.setItem('conversation', JSON.stringify(conversation))
+  }, [conversation])
 
   // const textRef = useRef();
-  const chatboxRef = useRef();
+  const chatboxRef = useRef()
+
+  const setConversationFnc = () => {
+    setConversation((prevState) => {
+      return [
+        ...prevState,
+        {
+          sender: 'user',
+          content: userInput,
+        },
+      ]
+    })
+    sendRequest(userInput)
+    setUserInput('')
+  }
 
   const submitHandler = (event) => {
-    event.preventDefault();
-    if (userInput !== "") {
+    event.preventDefault()
+    if (userInput !== '') {
+      setConversationFnc()
+    }
+  }
+
+  useEffect(() => {
+    if (transcript !== '' && !listening) {
       setConversation((prevState) => {
         return [
           ...prevState,
           {
-            sender: "user",
-            content: userInput,
+            sender: 'user',
+            content: transcript,
           },
-        ];
-      });
-      sendRequest(userInput);
-
-      setUserInput("");
+        ]
+      })
+      sendRequest(transcript)
+      setUserInput('')
+      resetTranscript()
     }
-  };
+  }, [listening])
 
   return (
     <>
       <About />
       <section className="section" id="section-chatbox">
+        <p className="section-noty">
+          {!browserSupportsSpeechRecognition && `Chức năng nhập câu hỏi bằng giọng nói hiện chỉ hỗ trợ trên trình duyệt Chrome`}
+        </p>
         <div className="chatbox">
           <div className="chatbox-content" ref={chatboxRef}>
             {conversation.map((mess, index) => (
-              <Message
-                key={index}
-                sender={mess.sender}
-                content={mess.content}
-              />
+              <Message key={index} sender={mess.sender} content={mess.content} />
             ))}
+            {transcript.length !== 0 && <div className="message message--user">{transcript}</div>}
           </div>
           <div className="chatbox-control">
             <form onSubmit={submitHandler}>
@@ -86,13 +107,15 @@ const Homepage = () => {
                   // ref={textRef}
                   value={userInput}
                   onChange={(event) => {
-                    setUserInput(event.target.value);
+                    setUserInput(event.target.value)
                   }}
                 />
                 <div className="chatbox-action">
-                  <button>
-                    <i className="fa-solid fa-microphone"></i>
-                  </button>
+                  {browserSupportsSpeechRecognition && (
+                    <button type="button" onClick={SpeechRecognition.startListening}>
+                      <i className="fa-solid fa-microphone"></i>
+                    </button>
+                  )}
                   <button
                     type="submit"
                     // onClick={(event) => {
@@ -110,7 +133,7 @@ const Homepage = () => {
 
       <Service />
     </>
-  );
-};
+  )
+}
 
-export default Homepage;
+export default Homepage
