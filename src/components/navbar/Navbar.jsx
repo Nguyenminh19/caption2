@@ -9,7 +9,7 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="container" height="100%">
         <div className="container-fluid d-flex justify-content-between">
-          <div className="nav-item nav-link nav-link--header">DTU</div>
+          {/* <div className="nav-item nav-link nav-link--header">DTU</div> */}
 
           <div className="container-fluid navbar-nav d-flex flex-row justify-content-end">
             <div
