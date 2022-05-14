@@ -15,7 +15,6 @@ const Homepage = () => {
   })
 
   const [userInput, setUserInput] = useState('')
-  const [userSpoken, setUserSpoken] = useState('')
 
   const addMessageToConversation = (message) => {
     setConversation((prevState) => [
@@ -112,16 +111,18 @@ const Homepage = () => {
                 />
                 <div className="chatbox-action">
                   {browserSupportsSpeechRecognition && (
-                    <button type="button" onClick={SpeechRecognition.startListening}>
+                    <button
+                      className={listening && `chatbox-action-micro`}
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        SpeechRecognition.startListening()
+                      }}
+                    >
                       <i className="fa-solid fa-microphone"></i>
                     </button>
                   )}
-                  <button
-                    type="submit"
-                    // onClick={(event) => {
-                    //   submitHandler(event);
-                    // }}
-                  >
+                  <button type="submit">
                     <i className="fa-solid fa-circle-arrow-right"></i>
                   </button>
                 </div>
