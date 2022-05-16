@@ -15,6 +15,7 @@ const Homepage = () => {
   })
 
   const [userInput, setUserInput] = useState('')
+  const [numberRequest, setNumberRequest] = useState(0)
 
   const addMessageToConversation = (message) => {
     setConversation((prevState) => [
@@ -26,12 +27,23 @@ const Homepage = () => {
     ])
   }
 
-  const { isLoading, error, sendRequest } = useGetAnswer(addMessageToConversation)
+  const { isLoading, error, sendRequest, rateOfConfusedAnwser, numberAnwer } = useGetAnswer(addMessageToConversation)
+  useEffect(() => {
+    if (rateOfConfusedAnwser > 0.6 && numberAnwer > 6) {
+      addMessageToConversation(
+        'Câu trả lời có vẻ như không được chính xác. Bạn có thể nhập câu hỏi bằng chữ để nâng cao sự chính xác của câu trả lời',
+      )
+    }
+  }, [rateOfConfusedAnwser])
 
   useEffect(() => {
-    if (conversation.length === 0) {
-      sendRequest('hello')
+    async function fnc() {
+      if (numberRequest === 0) {
+        await setNumberRequest(numberRequest + 1)
+        sendRequest('hello')
+      }
     }
+    fnc()
   }, [])
 
   useEffect(() => {
@@ -39,7 +51,7 @@ const Homepage = () => {
       chatboxRef.current.scrollTop = chatboxRef.current.scrollHeight
     }
     sessionStorage.setItem('conversation', JSON.stringify(conversation))
-  }, [conversation])
+  }, [conversation, transcript])
 
   // const textRef = useRef();
   const chatboxRef = useRef()
@@ -87,7 +99,7 @@ const Homepage = () => {
       <About />
       <section className="section" id="section-chatbox">
         <p className="section-noty">
-          {!browserSupportsSpeechRecognition && `Chức năng nhập câu hỏi bằng giọng nói hiện chỉ hỗ trợ trên trình duyệt Chrome`}
+          {!browserSupportsSpeechRecognition && `Chức năng nhập câu hỏi bằng giọng nói hiện chỉ hỗ trợ trên trình duyệt Chrome.`}
         </p>
         <div className="chatbox">
           <div className="chatbox-content" ref={chatboxRef}>
@@ -112,11 +124,11 @@ const Homepage = () => {
                 <div className="chatbox-action">
                   {browserSupportsSpeechRecognition && (
                     <button
-                      className={listening && `chatbox-action-micro`}
+                      className={listening ? `chatbox-action-micro` : ''}
                       type="button"
                       onClick={(e) => {
                         e.preventDefault()
-                        SpeechRecognition.startListening()
+                        SpeechRecognition.startListening({ language: 'vi-VN' })
                       }}
                     >
                       <i className="fa-solid fa-microphone"></i>
