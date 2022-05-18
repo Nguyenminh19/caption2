@@ -1,3 +1,14 @@
+.section {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .section-noty {
+    font-size: 20px;
+    color: red;
+  }
+
+  
 .chatbox {
     margin: 5rem auto;
     height: 70vh;
@@ -39,6 +50,22 @@
     font-size: 14px;
     transition: all ease 0.3s;
 }
+
+
+.chatbox-action-micro {
+    border-radius: 50%;
+    animation: test 0.5s infinite both;
+    animation-direction: alternate;
+  }
+  
+  @keyframes test {
+    from {
+      background-color: inherit;
+    }
+    to {
+      background-color: rgb(199, 199, 202);
+    }
+  }
 
 .chatbox-action button:hover {
     color: #df6c21;

@@ -1,14 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
-import useGetAnswer from "../../hooks/use-getAnswer";
-import Message from "../Message/Message";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
+import benefit1 from "../assets/img/benefit1.jpg";
+import benefit2 from "../assets/img/benefit2.jpg";
+import benefit3 from "../assets/img/benefit3.jpg";
+import WFHImage from "../assets/img/WFH.png";
+import Message from "../components/Message/Message";
+import WaveMessage from "../components/WaveMessage/WaveMessage";
+import useGetAnswer from "../hooks/use-getAnswer";
 import About from "./About";
 import "./homepage.css";
-import Service from "./Service";
-import WFHImage from "../../assets/img/WFH.png";
-
-import benefit1 from "../../assets/img/benefit1.jpg";
-import benefit2 from "../../assets/img/benefit2.jpg";
-import benefit3 from "../../assets/img/benefit3.jpg";
 
 const benefits = [
   {
@@ -32,6 +34,14 @@ const benefits = [
 ];
 
 const Homepage = () => {
+  const {
+    transcript,
+    listening,
+    browserSupportsSpeechRecognition,
+    resetTranscript,
+  } = useSpeechRecognition();
+
+  // init conversation when load firsttime page
   const [conversation, setConversation] = useState(() => {
     const saved = sessionStorage.getItem("conversation");
     const initialValue = JSON.parse(saved);
@@ -39,6 +49,8 @@ const Homepage = () => {
   });
 
   const [userInput, setUserInput] = useState("");
+
+  const [numberRequest, setNumberRequest] = useState(0);
 
   const addMessageToConversation = (message) => {
     setConversation((prevState) => [
@@ -50,47 +62,88 @@ const Homepage = () => {
     ]);
   };
 
-  const { isLoading, error, sendRequest } = useGetAnswer(
-    addMessageToConversation
-  );
+  const { isLoading, error, sendRequest, rateOfConfusedAnwser, numberAnwer } =
+    useGetAnswer(addMessageToConversation);
 
   useEffect(() => {
-    if (conversation.length === 0) {
-      sendRequest("hello");
+    if (rateOfConfusedAnwser > 0.6 && numberAnwer > 6) {
+      addMessageToConversation(
+        "Câu trả lời có vẻ như không được chính xác. Bạn có thể nhập câu hỏi bằng chữ để nâng cao sự chính xác của câu trả lời"
+      );
     }
-  }, [conversation]);
+  }, [rateOfConfusedAnwser, numberAnwer]);
 
+  useEffect(() => {
+    if (numberRequest === 0) {
+      setNumberRequest((numberRequest) => numberRequest + 1);
+
+      setConversation([
+        {
+          sender: "bot",
+          content:
+            "Hello nhá. Mình là DTUBot, mình có thể giúp gì cho bạn?. Chọn mục bạn muốn tìm kiếm để có thể nhận kết quả chính xác hơn",
+        },
+      ]);
+    }
+  }, [numberRequest]);
+
+  // auto scroll bottom chatbox
   useEffect(() => {
     if (chatboxRef.current) {
       chatboxRef.current.scrollTop = chatboxRef.current.scrollHeight;
     }
     sessionStorage.setItem("conversation", JSON.stringify(conversation));
-  }, [conversation]);
+  }, [conversation, transcript]);
 
   const chatboxRef = useRef();
+
+  const setConversationFnc = () => {
+    setConversation((prevState) => {
+      return [
+        ...prevState,
+        {
+          sender: "user",
+          content: userInput,
+        },
+      ];
+    });
+    sendRequest(userInput);
+    setUserInput("");
+  };
 
   const submitHandler = (event) => {
     event.preventDefault();
     if (userInput !== "") {
+      setConversationFnc();
+    }
+  };
+
+  // Update conversation when use microphone
+  useEffect(() => {
+    if (transcript !== "" && !listening) {
       setConversation((prevState) => {
         return [
           ...prevState,
           {
             sender: "user",
-            content: userInput,
+            content: transcript,
           },
         ];
       });
-      sendRequest(userInput);
-
+      sendRequest(transcript);
       setUserInput("");
+      resetTranscript();
     }
-  };
+  }, [listening, resetTranscript, sendRequest, transcript]);
 
   return (
     <>
       <About />
       <section className="section" id="section-chatbox">
+        <p className="section-noty">
+          {!browserSupportsSpeechRecognition &&
+            `Chức năng nhập câu hỏi bằng giọng nói hiện chỉ hỗ trợ trên trình duyệt Chrome.`}
+        </p>
         <div className="chatbox">
           <div className="chatbox-content" ref={chatboxRef}>
             {conversation.map((mess, index) => (
@@ -100,6 +153,11 @@ const Homepage = () => {
                 content={mess.content}
               />
             ))}
+            {transcript.length !== 0 && (
+              <div className="message message--user">{transcript}</div>
+            )}
+
+            {isLoading && <WaveMessage />}
           </div>
           <div className="chatbox-control">
             <form onSubmit={submitHandler}>
@@ -108,22 +166,25 @@ const Homepage = () => {
                   type="text"
                   className="input-text"
                   placeholder="Enter your message ...."
-                  // ref={textRef}
                   value={userInput}
                   onChange={(event) => {
                     setUserInput(event.target.value);
                   }}
                 />
                 <div className="chatbox-action">
-                  <button>
-                    <i className="fa-solid fa-microphone"></i>
-                  </button>
-                  <button
-                    type="submit"
-                    // onClick={(event) => {
-                    //   submitHandler(event);
-                    // }}
-                  >
+                  {browserSupportsSpeechRecognition && (
+                    <button
+                      className={listening ? `chatbox-action-micro` : ""}
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        SpeechRecognition.startListening({ language: "vi-VN" });
+                      }}
+                    >
+                      <i className="fa-solid fa-microphone"></i>
+                    </button>
+                  )}
+                  <button type="submit">
                     <i className="fa-solid fa-circle-arrow-right"></i>
                   </button>
                 </div>
@@ -132,6 +193,7 @@ const Homepage = () => {
           </div>
         </div>
       </section>
+
       <section className="section" id="section-intro">
         <div className="container">
           <div className="intro__description">
@@ -190,7 +252,6 @@ const Homepage = () => {
           </div>
         </div>
       </section>
-      {/* <Service /> */}
     </>
   );
 };

@@ -1,5 +1,4 @@
 import React from "react";
-import { div } from "react-router-dom";
 import "./navbar.css";
 
 // import logoDTU from "../../assets/img/logo.gif";

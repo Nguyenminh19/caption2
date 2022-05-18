@@ -1,7 +1,7 @@
 import React from "react";
 
 import "./about.css";
-import ChatbotBackground from "../../assets/img/chatbot-background2.jpg";
+import ChatbotBackground from "../assets/img/chatbot-background2.jpg";
 
 const About = () => {
   return (
