@@ -8,6 +8,17 @@ html, body {
 
 .button {
     width: fit-content;
+    padding: 7px 13px;
+    border-radius: 8px;
+    background: none;
+}
+
+.button-category-item {
+    border: 2px solid rgba(25, 8, 106, 0.45);
+    margin-left: 5px;
+    cursor: pointer;
+    color: #4343a7;
+    font-weight: 600;
 }
 
 .text-center {
@@ -23,6 +34,8 @@ html, body {
     text-transform: uppercase;
     font-size: 2rem;
     margin: 10px 0;
+    color: #33405e;
+    font-weight: 600;
 }
 
 .section p {

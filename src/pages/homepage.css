@@ -3,11 +3,20 @@
     flex-direction: column;
   }
   
-  .section-noty {
+.section-noty {
     font-size: 20px;
     color: red;
-  }
+}
 
+.category-button {
+    width: 70%;
+    margin: 12px;
+}
+
+.button + .button {
+    margin-right: 12px;
+    margin-top: 12px;
+}
   
 .chatbox {
     margin: 5rem auto;
@@ -23,7 +32,7 @@
 }
 
 .chatbox-content {
-    height: 80%;
+    height: 100%;
     overflow-y: auto;
 }
 

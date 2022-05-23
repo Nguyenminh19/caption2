@@ -33,6 +33,45 @@ const benefits = [
   },
 ];
 
+const category = [
+  {
+    key: 1,
+    display: "School",
+    value: "school",
+    popularQuestions: [
+      "Tại sao nên học Đại Học Duy Tân",
+      "Chi tiết thông tin tuyển sinh của ĐH Duy Tân",
+      "Số tài khoản của trường",
+      "Xem lịch thi ở đâu",
+      "Cách lấy giấy xác nhận sinh viên",
+    ],
+  },
+  {
+    key: 2,
+    display: "MyDTU",
+    value: "mydtu",
+    popularQuestions: [
+      "Đăng kí những môn đã học rồi thì có hủy được không",
+      "Cách lấy lại mật khẩu MyDTU",
+      "Vì sao không vào được MyDTU",
+      "Cách chuyển hướng mail DTU sang sang mail thường",
+      "Đổi lớp trên hệ thống nhưng không có lịch học",
+    ],
+  },
+  {
+    key: 3,
+    display: "Elearning",
+    value: "el",
+    popularQuestions: [
+      "Đang học thì bị out ra khỏi phòng zoom",
+      "Không vào lớp bằng link zoom được",
+      "Bấm nút tiếp theo bị lặp lại câu cũ tải lại trang vẫn không được",
+      "Trắng bài sau khi submit",
+      "Thầy cô không nhận được bài khi hệ thống tự nộp lúc hết giờ",
+    ],
+  },
+];
+
 const Homepage = () => {
   const {
     transcript,
@@ -47,6 +86,12 @@ const Homepage = () => {
     const initialValue = JSON.parse(saved);
     return initialValue || [];
   });
+
+  const [categoryCurrent, setCategoryCurrent] = useState();
+
+  const handleClickCategory = (category) => {
+    setCategoryCurrent(category);
+  };
 
   const [userInput, setUserInput] = useState("");
 
@@ -73,6 +118,43 @@ const Homepage = () => {
     }
   }, [rateOfConfusedAnwser, numberAnwer]);
 
+  const handleQuestionClick = (item) => {
+    setConversation((prevState) => {
+      return [
+        ...prevState,
+        {
+          sender: "user",
+          content: item,
+        },
+      ];
+    });
+    sendRequest(item);
+  };
+
+  console.log(rateOfConfusedAnwser);
+
+  useEffect(() => {
+    setConversation([
+      {
+        sender: "bot",
+        content: null,
+        options: () => (
+          <div className="category-button">
+            {categoryCurrent.popularQuestions.map((item, index) => (
+              <button
+                className="button button-category-item"
+                key={index}
+                onClick={() => handleQuestionClick(item)}
+              >
+                {item}
+              </button>
+            ))}
+          </div>
+        ),
+      },
+    ]);
+  }, [categoryCurrent]);
+
   useEffect(() => {
     if (numberRequest === 0) {
       setNumberRequest((numberRequest) => numberRequest + 1);
@@ -82,6 +164,19 @@ const Homepage = () => {
           sender: "bot",
           content:
             "Hello nhá. Mình là DTUBot, mình có thể giúp gì cho bạn?. Chọn mục bạn muốn tìm kiếm để có thể nhận kết quả chính xác hơn",
+          options: () => (
+            <div className="category-button">
+              {category.map((item, index) => (
+                <button
+                  className="button button-category-item"
+                  key={index}
+                  onClick={() => handleClickCategory(item)}
+                >
+                  {item.display}
+                </button>
+              ))}
+            </div>
+          ),
         },
       ]);
     }
@@ -151,6 +246,7 @@ const Homepage = () => {
                 key={index}
                 sender={mess.sender}
                 content={mess.content}
+                options={mess.options}
               />
             ))}
             {transcript.length !== 0 && (

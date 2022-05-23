@@ -12,24 +12,25 @@
 .message--bot {
     margin-left: 20px;
     margin-bottom: 10px;
-    background-color: #A8DDFD;
+    background-color: #4343a7;
     text-align: left;
     font:   'Open Sans', sans-serif;
-    border: 1px solid #97C6E3;
+    border: 1px solid #4343a7;
     border-radius: 10px;
+    color: white;
 }
 
-.message--bot:before {
+/* .message--bot:before {
     content: '';
     position: absolute;
     width: 0;
     height: 0;
-    border-top: 15px solid #A8DDFD;
+    border-top: 15px solid #4343a7;
     border-left: 15px solid transparent;
     border-right: 15px solid transparent;
     top: 0;
     left: -15px;
-}
+} */
 
 .message--user {
     margin: 0 20px 10px auto;
@@ -40,7 +41,7 @@
     border-radius: 10px;
 }
 
-.message--user:before {
+/* .message--user:before {
     content: '';
     position: absolute;
     width: 0;
@@ -50,4 +51,4 @@
     border-right: 16px solid transparent;
     bottom: -1px;
     right: -17px;
-}
+} */
