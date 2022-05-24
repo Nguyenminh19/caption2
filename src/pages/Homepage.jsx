@@ -107,8 +107,14 @@ const Homepage = () => {
     ]);
   };
 
-  const { isLoading, error, sendRequest, rateOfConfusedAnwser, numberAnwer } =
-    useGetAnswer(addMessageToConversation);
+  const {
+    isLoading,
+    error,
+    sendRequest,
+    rateOfConfusedAnwser,
+    numberAnwer,
+    isConfuse,
+  } = useGetAnswer(addMessageToConversation);
 
   useEffect(() => {
     if (rateOfConfusedAnwser > 0.6 && numberAnwer > 6) {
@@ -131,10 +137,30 @@ const Homepage = () => {
     sendRequest(item);
   };
 
-  console.log(conversation);
+  useEffect(() => {
+    console.log(isConfuse);
+    if (isConfuse == true) {
+      setConversation((pre) => [
+        ...pre,
+        {
+          sender: "bot",
+          content: "Bạn có muốn kết nối với chuyên gia không?",
+          options: () => (
+            <a
+              href="https://chatbot-education.atlassian.net/jira/software/projects/CBE/boards/3/roadmap?timeline=WEEKS"
+              className="button category-button"
+            >
+              Chat with Expert
+            </a>
+          ),
+        },
+      ]);
+    }
+  }, [isConfuse]);
 
   useEffect(() => {
-    setConversation([
+    setConversation((pre) => [
+      ...pre,
       {
         sender: "bot",
         content: null,

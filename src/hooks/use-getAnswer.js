@@ -6,6 +6,7 @@ const useGetAnswer = (applyData) => {
   const [rateOfConfusedAnwser, setRateOfConfusedAnwser] = useState(0);
   const [numberConfusedAnwer, setNumberConfusedAnswer] = useState(0);
   const [numberAnwer, setNumberAnswer] = useState(0);
+  const [isConfuse, setIsConfuse] = useState(false);
 
   const resetRate = () => {
     setNumberAnswer(0);
@@ -24,8 +25,12 @@ const useGetAnswer = (applyData) => {
       });
       const data = await response.json();
       setNumberAnswer(numberAnwer + 1);
+
       if (!data.tag) {
         setNumberConfusedAnswer(numberConfusedAnwer + 1);
+        setIsConfuse(true);
+      } else {
+        setIsConfuse(false);
       }
       applyData(data.mess);
     } catch (err) {
@@ -46,6 +51,7 @@ const useGetAnswer = (applyData) => {
     rateOfConfusedAnwser,
     numberAnwer,
     resetRate,
+    isConfuse,
   };
 };
 
