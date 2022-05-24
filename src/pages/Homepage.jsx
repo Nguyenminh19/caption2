@@ -131,7 +131,7 @@ const Homepage = () => {
     sendRequest(item);
   };
 
-  console.log(rateOfConfusedAnwser);
+  console.log(conversation);
 
   useEffect(() => {
     setConversation([
